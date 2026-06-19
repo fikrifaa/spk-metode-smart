@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPK SMART — Sistem Pendukung Keputusan</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+
+<!-- ============================================================ SIDEBAR -->
+<aside class="sidebar">
+  <a class="brand" href="#">
+    <div class="brand-icon"><i class="ti ti-cpu"></i></div>
+    <div>
+      <div class="brand-name">SPK SMART</div>
+      <div class="brand-sub">Decision Support</div>
+    </div>
+  </a>
+
+  <nav class="nav">
+    <div class="nav-label">Menu Utama</div>
+    <button class="nav-item active" data-tab="tab-kriteria">
+      <i class="ti ti-adjustments-horizontal"></i>
+      Bobot Kriteria
+      <span class="nav-badge" id="nb-kriteria">6</span>
+    </button>
+    <button class="nav-item" data-tab="tab-alternatif">
+      <i class="ti ti-table"></i>
+      Data Alternatif
+      <span class="nav-badge" id="nb-alternatif">5</span>
+    </button>
+    <button class="nav-item" data-tab="tab-hasil">
+      <i class="ti ti-trophy"></i>
+      Hasil Evaluasi
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="nav-label">Pengaturan</div>
+    <button class="toggle-theme" id="darkBtn">
+      <i class="ti ti-moon" id="darkIcon"></i>
+      <span id="darkLabel">Mode Gelap</span>
+    </button>
+  </div>
+</aside>
+
+<!-- ============================================================ MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="breadcrumb">
+        <span>SPK</span>
+        <span class="sep">/</span>
+        <span class="current" id="pageTitle">Bobot Kriteria</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-2)">
+        <div class="status-dot"></div>
+        Sistem Aktif
+      </div>
+      <div class="topbar-divider"></div>
+      <span style="font-size:12.5px;color:var(--text-2)">Admin Panel</span>
+      <div class="avatar">A</div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ==================== TAB: KRITERIA -->
+    <div class="tab-pane active" id="tab-kriteria">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Manajemen Bobot Kriteria</div>
+            <div class="card-desc">Atur tingkat kepentingan setiap kriteria dengan menggeser slider. Total bobot harus mencapai 100%.</div>
+          </div>
+          <div class="btn-group">
+            <button class="btn" id="btnReset"><i class="ti ti-rotate-clockwise"></i> Reset</button>
+            <button class="btn btn-primary" id="btnNorm"><i class="ti ti-check"></i> Normalisasi</button>
+          </div>
+        </div>
+
+        <div class="weight-grid" id="weightSliders"></div>
+
+        <div class="total-bar">
+          <span>Total bobot keseluruhan</span>
+          <span class="total-val" id="totalWeight">100%</span>
+        </div>
+
+        <div class="weight-stale-bar" id="staleBar">
+          <i class="ti ti-alert-triangle"></i>
+          <span class="stale-text">Bobot telah diubah — hasil evaluasi belum diperbarui.</span>
+          <button class="btn-hitung" id="btnHitung">
+            <i class="ti ti-calculator"></i> Hitung Sekarang
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--blue);">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <i class="ti ti-info-circle" style="font-size:20px;color:var(--blue);margin-top:1px;flex-shrink:0"></i>
+          <div>
+            <div class="card-title" style="font-size:13.5px">Keterangan Tipe Kriteria</div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--text-2)">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="badge badge-benefit">Benefit</span>
+                Semakin tinggi nilai, semakin baik. (Contoh: kecepatan, kuota)
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="badge badge-cost">Cost</span>
+                Semakin rendah nilai, semakin baik. (Contoh: harga)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB: ALTERNATIF -->
+    <div class="tab-pane" id="tab-alternatif">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Matriks Keputusan</div>
+            <div class="card-desc">Data alternatif yang akan dievaluasi. Klik sel untuk mengedit nilai secara langsung.</div>
+          </div>
+          <div class="btn-group">
+            <input type="file" id="fileImport" accept=".json">
+            <button class="btn" id="btnImport"><i class="ti ti-upload"></i> Import JSON</button>
+            <button class="btn btn-primary" id="btnAdd"><i class="ti ti-plus"></i> Tambah Baris</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table id="tblData">
+            <thead>
+              <tr>
+                <th style="width:160px">Nama Alternatif</th>
+                <th>Harga<br><span class="badge badge-cost" style="margin-top:3px">C1 · cost</span></th>
+                <th>Kecepatan (Mbps)<br><span class="badge badge-benefit" style="margin-top:3px">C2 · benefit</span></th>
+                <th>Kuota (GB)<br><span class="badge badge-benefit" style="margin-top:3px">C3 · benefit</span></th>
+                <th>Stabilitas<br><span class="badge badge-benefit" style="margin-top:3px">C4 · benefit</span></th>
+                <th>Jangkauan<br><span class="badge badge-benefit" style="margin-top:3px">C5 · benefit</span></th>
+                <th>Layanan<br><span class="badge badge-benefit" style="margin-top:3px">C6 · benefit</span></th>
+                <th style="width:50px"></th>
+              </tr>
+            </thead>
+            <tbody id="dataBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--blue);">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <i class="ti ti-code" style="font-size:20px;color:var(--blue);margin-top:1px;flex-shrink:0"></i>
+          <div>
+            <div class="card-title" style="font-size:13.5px">Format Import JSON</div>
+            <div style="margin-top:8px">
+              <pre style="font-family:var(--mono);font-size:11px;color:var(--text-2);line-height:1.7;overflow-x:auto">[ { "nama":"IndiHome", "harga":350000, "kecepatan":20, "kuota":100,
+      "stabilitas":"Stabil", "jangkauan":"Luas", "layanan":"Responsif" }, ... ]</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB: HASIL -->
+    <div class="tab-pane" id="tab-hasil">
+
+      <div class="weight-snapshot" id="weightSnapshot">
+        <div class="weight-snapshot-head">
+          <i class="ti ti-scale"></i>
+          <span class="weight-snapshot-title">Bobot yang Digunakan dalam Perhitungan</span>
+          <span class="weight-snapshot-sub" id="snapshotTs">—</span>
+        </div>
+        <div class="weight-chips" id="weightChips"></div>
+      </div>
+
+      <div class="metrics-grid" id="metricsGrid"></div>
+
+      <div class="card">
+        <div class="card-head" style="margin-bottom:14px">
+          <div>
+            <div class="card-title">Rumus SMART</div>
+            <div class="card-desc">Simple Multi-Attribute Rating Technique - landasan kalkulasi sistem ini.</div>
+          </div>
+        </div>
+        <div class="formula-grid">
+          <div class="formula-box">
+            <div class="formula-title">Normalisasi — Benefit</div>
+            <div class="formula-eq">
+              u(a) =<br>
+              (C<sub>out</sub> − C<sub>min</sub>)<br>
+              ────────────────<br>
+              (C<sub>max</sub> − C<sub>min</sub>) × 100
+            </div>
+          </div>
+          <div class="formula-box">
+            <div class="formula-title">Normalisasi — Cost</div>
+            <div class="formula-eq">
+              u(a) =<br>
+              (C<sub>max</sub> − C<sub>out</sub>)<br>
+              ────────────────<br>
+              (C<sub>max</sub> − C<sub>min</sub>) × 100
+            </div>
+          </div>
+          <div class="formula-box">
+            <div class="formula-title">Nilai Akhir Alternatif</div>
+            <div class="formula-eq">
+              V(aᵢ) =<br>
+              Σ wⱼ × u(aᵢ)<br><br>
+              wⱼ = bobot kriteria ke-j
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Tabel Normalisasi U(x)</div>
+            <div class="card-desc">Nilai utilitas tiap kriteria setelah proses normalisasi (rentang 0 – 100).</div>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table id="tblBreak">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Peringkat Alternatif Terbaik</div>
+            <div class="card-desc">Diurutkan berdasarkan nilai akhir V(aᵢ) tertinggi.</div>
+          </div>
+          <button class="btn btn-sm" id="btnCalc"><i class="ti ti-refresh"></i> Hitung Ulang</button>
+        </div>
+        <div class="rank-list" id="rankList"></div>
+      </div>
+
+      <div style="text-align:center;padding:8px 0 4px;font-size:12px;color:var(--text-3);line-height:1.7">
+        <strong style="color:var(--text-2)">Sistem Pendukung Keputusan - Metode SMART</strong><br>
+        Muhammad Fadhel Akbar · Fikri Fadli · Aulia Putri<br>
+        Universitas Pamulang &copy; 2026
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Script -->
+<script src="./assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+[
+  {
+    "nama": "IndiHome",
+    "harga": 350000,
+    "kecepatan": 20,
+    "kuota": 100,
+    "stabilitas": "Stabil",
+    "jangkauan": "Luas",
+    "layanan": "Responsif"
+  },
+  {
+    "nama": "Biznet",
+    "harga": 375000,
+    "kecepatan": 50,
+    "kuota": 500,
+    "stabilitas": "Sangat Stabil",
+    "jangkauan": "Sedang",
+    "layanan": "Baik"
+  },
+  {
+    "nama": "First Media",
+    "harga": 320000,
+    "kecepatan": 30,
+    "kuota": 200,
+    "stabilitas": "Cukup",
+    "jangkauan": "Luas",
+    "layanan": "Standar"
+  },
+  {
+    "nama": "Oxygen.id",
+    "harga": 300000,
+    "kecepatan": 25,
+    "kuota": 150,
+    "stabilitas": "Stabil",
+    "jangkauan": "Terbatas",
+    "layanan": "Responsif"
+  },
+  {
+    "nama": "MyRepublic",
+    "harga": 390000,
+    "kecepatan": 40,
+    "kuota": 300,
+    "stabilitas": "Sangat Stabil",
+    "jangkauan": "Luas",
+    "layanan": "Sangat Responsif"
+  }
+]

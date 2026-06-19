@@ -20,11 +20,6 @@ const QUAL_OPTS = [
 
 let weights = CRITERIA.map(c => c.defW);
 
-/* 10 ISP — sesuai Tabel 1 (Data Mentah) di PPT.
-   Label C4-C6 sudah dipetakan ke 5 opsi QUAL_OPTS yang valid:
-   Sangat Luas/Sangat Stabil/Sangat Responsif -> Sangat Baik
-   Luas/Responsif                              -> Stabil
-   Cukup/Standar/Terbatas                      -> tetap */
 let data = [
   { nama:'IndiHome',        harga:350000, kecepatan:20, kuota:100, stabilitas:'Standar',     jangkauan:'Sangat Baik', layanan:'Stabil'     },
   { nama:'Biznet Home',     harga:375000, kecepatan:30, kuota:150, stabilitas:'Stabil',      jangkauan:'Stabil',      layanan:'Standar'    },
@@ -247,6 +242,9 @@ document.getElementById('btnAdd').addEventListener('click', () => {
   renderTable();
 });
 
+/* ── IMPORT EXCEL / CSV ─────────────────────── */
+const REQUIRED_COLS = ['nama', 'harga', 'kecepatan', 'kuota', 'stabilitas', 'jangkauan', 'layanan'];
+
 document.getElementById('btnImport').addEventListener('click', () => {
   document.getElementById('fileImport').click();
 });
@@ -254,22 +252,84 @@ document.getElementById('btnImport').addEventListener('click', () => {
 document.getElementById('fileImport').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
+
   const reader = new FileReader();
+
   reader.onload = evt => {
     try {
-      const imported = JSON.parse(evt.target.result);
-      if (Array.isArray(imported) && imported.length) {
-        data = imported;
-        renderTable();
-        alert('Data berhasil diimpor: ' + imported.length + ' alternatif.');
-      } else {
-        alert('Format JSON tidak valid atau kosong.');
+      const arrayBuffer = evt.target.result;
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+      // Ambil sheet pertama
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+
+      // Convert ke array of objects (header = baris pertama)
+      const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+
+      if (!rows.length) {
+        alert('File kosong atau tidak ada data.');
+        return;
       }
-    } catch {
-      alert('Gagal membaca file. Pastikan file berformat JSON yang valid.');
+
+      // Normalisasi key header (lowercase, trim)
+      const normalizeKey = k => k.toString().trim().toLowerCase();
+      const rawKeys = Object.keys(rows[0]);
+      const keyMap = {}; // normalizedKey -> originalKey
+      rawKeys.forEach(k => { keyMap[normalizeKey(k)] = k; });
+
+      // Cek kolom wajib ada
+      const missing = REQUIRED_COLS.filter(col => !(col in keyMap));
+      if (missing.length) {
+        alert(`Kolom berikut tidak ditemukan di file:\n${missing.join(', ')}\n\nPastikan header sesuai format.`);
+        return;
+      }
+
+      // Map baris ke format data
+      const imported = rows.map((row, idx) => {
+        const get = col => row[keyMap[col]];
+        const harga     = parseFloat(get('harga'))     || 0;
+        const kecepatan = parseFloat(get('kecepatan')) || 0;
+        const kuota     = parseFloat(get('kuota'))     || 0;
+
+        // Normalisasi nilai kualitatif ke QUAL_OPTS
+        const normalizeQual = val => {
+          const s = String(val).trim().toLowerCase();
+          const match = QUAL_OPTS.find(o => o.toLowerCase() === s);
+          if (match) return match;
+          // fuzzy: cari yang paling mirip
+          for (const [k, _] of Object.entries(QUAL_MAP)) {
+            if (s.includes(k)) return QUAL_OPTS.find(o => o.toLowerCase() === k) || 'Standar';
+          }
+          return 'Standar';
+        };
+
+        return {
+          nama:       String(get('nama') || `Baris ${idx + 2}`).trim(),
+          harga,
+          kecepatan,
+          kuota,
+          stabilitas: normalizeQual(get('stabilitas')),
+          jangkauan:  normalizeQual(get('jangkauan')),
+          layanan:    normalizeQual(get('layanan')),
+        };
+      }).filter(r => r.nama);
+
+      if (!imported.length) {
+        alert('Tidak ada baris data yang valid ditemukan.');
+        return;
+      }
+
+      data = imported;
+      renderTable();
+      alert(`✓ Berhasil mengimpor ${imported.length} alternatif dari "${file.name}".`);
+
+    } catch (err) {
+      alert('Gagal membaca file.\n' + err.message);
     }
   };
-  reader.readAsText(file);
+
+  reader.readAsArrayBuffer(file);
   this.value = '';
 });
 
@@ -313,7 +373,6 @@ function renderResults() {
   const maxVal  = Math.max(...results.map(r => r.value), 1);
   const winner  = results[0];
 
-  /* Metric cards */
   metricsEl.innerHTML = `
     <div class="metric-card">
       <div class="metric-label">Jumlah Alternatif</div>
@@ -332,7 +391,6 @@ function renderResults() {
     </div>
   `;
 
-  /* Rank cards */
   rankEl.innerHTML = results.map((r, i) => `
     <div class="rank-card rank-${i+1}">
       <div class="rank-num">${i + 1}</div>
@@ -348,7 +406,6 @@ function renderResults() {
     </div>
   `).join('');
 
-  /* Breakdown table */
   breakThead.innerHTML = `
     <tr>
       <th>Rank</th>

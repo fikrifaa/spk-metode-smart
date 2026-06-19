@@ -12,6 +12,9 @@
   <!-- Tabler Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 
+  <!-- SheetJS (untuk import Excel & CSV) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="./assets/style.css">
 </head>
@@ -136,8 +139,8 @@
             <div class="card-desc">Data alternatif yang akan dievaluasi. Klik sel untuk mengedit nilai secara langsung.</div>
           </div>
           <div class="btn-group">
-            <input type="file" id="fileImport" accept=".json">
-            <button class="btn" id="btnImport"><i class="ti ti-upload"></i> Import JSON</button>
+            <input type="file" id="fileImport" accept=".xlsx,.xls,.csv">
+            <button class="btn" id="btnImport"><i class="ti ti-upload"></i> Import Excel/CSV</button>
             <button class="btn btn-primary" id="btnAdd"><i class="ti ti-plus"></i> Tambah Baris</button>
           </div>
         </div>
@@ -162,12 +165,15 @@
 
       <div class="card" style="border-left: 3px solid var(--blue);">
         <div style="display:flex;gap:12px;align-items:flex-start">
-          <i class="ti ti-code" style="font-size:20px;color:var(--blue);margin-top:1px;flex-shrink:0"></i>
+          <i class="ti ti-table" style="font-size:20px;color:var(--blue);margin-top:1px;flex-shrink:0"></i>
           <div>
-            <div class="card-title" style="font-size:13.5px">Format Import JSON</div>
+            <div class="card-title" style="font-size:13.5px">Format Import Excel / CSV</div>
             <div style="margin-top:8px">
-              <pre style="font-family:var(--mono);font-size:11px;color:var(--text-2);line-height:1.7;overflow-x:auto">[ { "nama":"IndiHome", "harga":350000, "kecepatan":20, "kuota":100,
-      "stabilitas":"Stabil", "jangkauan":"Luas", "layanan":"Responsif" }, ... ]</pre>
+              <pre style="font-family:var(--mono);font-size:11px;color:var(--text-2);line-height:1.7;overflow-x:auto">Kolom yang wajib ada (baris pertama = header):
+nama | harga | kecepatan | kuota | stabilitas | jangkauan | layanan
+
+Nilai kolom stabilitas / jangkauan / layanan harus salah satu dari:
+Terbatas · Cukup · Standar · Stabil · Sangat Baik</pre>
             </div>
           </div>
         </div>

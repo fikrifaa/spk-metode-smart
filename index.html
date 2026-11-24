@@ -74,23 +74,30 @@
       </div>
       <div class="topbar-divider"></div>
       <span style="font-size:12.5px;color:var(--text-2)">Admin Panel</span>
-      <div class="avatar">A</div>
     </div>
   </header>
 
   <div class="content">
+    <section class="flow-guide" aria-label="Langkah penggunaan">
+      <div class="flow-intro"><span class="eyebrow">PANDUAN ANALISIS</span><h1>Dari data ke rekomendasi.</h1><p>Ikuti tiga langkah untuk membandingkan alternatif dengan metode SMART.</p></div>
+      <div class="flow-steps">
+        <button class="flow-step active" data-tab="tab-kriteria"><span>01</span><span><strong>Tentukan bobot</strong><small>Atur prioritas kriteria</small></span></button>
+        <button class="flow-step" data-tab="tab-alternatif"><span>02</span><span><strong>Periksa data</strong><small>Isi alternatif pembanding</small></span></button>
+        <button class="flow-step" data-tab="tab-hasil"><span>03</span><span><strong>Baca hasil</strong><small>Lihat skor dan peringkat</small></span></button>
+      </div>
+    </section>
 
     <!-- ==================== TAB: KRITERIA -->
     <div class="tab-pane active" id="tab-kriteria">
       <div class="card">
         <div class="card-head">
           <div>
-            <div class="card-title">Manajemen Bobot Kriteria</div>
-            <div class="card-desc">Atur tingkat kepentingan setiap kriteria dengan menggeser slider. Total bobot harus mencapai 100%.</div>
+            <div class="step-kicker">LANGKAH 1 DARI 3</div><div class="card-title">Seberapa penting tiap kriteria?</div>
+            <div class="card-desc">Geser nilai untuk membagi prioritas. Jumlah bobot perlu 100% sebelum hasil dihitung.</div>
           </div>
           <div class="btn-group">
             <button class="btn" id="btnReset"><i class="ti ti-rotate-clockwise"></i> Reset</button>
-            <button class="btn btn-primary" id="btnNorm"><i class="ti ti-check"></i> Normalisasi</button>
+            <button class="btn btn-primary" id="btnNorm"><i class="ti ti-check"></i> Sesuaikan ke 100%</button>
           </div>
         </div>
 
@@ -100,6 +107,7 @@
           <span>Total bobot keseluruhan</span>
           <span class="total-val" id="totalWeight">100%</span>
         </div>
+        <div class="flow-actions"><span>Bobot awal sudah disiapkan. Kamu bisa langsung lanjut atau menyesuaikannya.</span><button class="btn btn-primary" data-go="tab-alternatif">Lanjut: periksa data <i class="ti ti-arrow-right"></i></button></div>
 
         <div class="weight-stale-bar" id="staleBar">
           <i class="ti ti-alert-triangle"></i>
@@ -135,8 +143,8 @@
       <div class="card">
         <div class="card-head">
           <div>
-            <div class="card-title">Matriks Keputusan</div>
-            <div class="card-desc">Data alternatif yang akan dievaluasi. Klik sel untuk mengedit nilai secara langsung.</div>
+            <div class="step-kicker">LANGKAH 2 DARI 3</div><div class="card-title">Bandingkan alternatif</div>
+            <div class="card-desc">Contoh data sudah tersedia. Edit langsung nilainya, tambah baris, atau impor file.</div>
           </div>
           <div class="btn-group">
             <input type="file" id="fileImport" accept=".xlsx,.xls,.csv">
@@ -162,6 +170,7 @@
           </table>
         </div>
       </div>
+      <div class="flow-actions"><span>Pastikan setiap alternatif memiliki nama dan nilai pada semua kriteria.</span><button class="btn btn-primary" data-go="tab-hasil">Lihat hasil evaluasi <i class="ti ti-arrow-right"></i></button></div>
 
       <div class="card" style="border-left: 3px solid var(--blue);">
         <div style="display:flex;gap:12px;align-items:flex-start">
@@ -191,8 +200,7 @@ Terbatas · Cukup · Standar · Stabil · Sangat Baik</pre>
         </div>
         <div class="weight-chips" id="weightChips"></div>
       </div>
-
-      <div class="metrics-grid" id="metricsGrid"></div>
+      <div class="step-kicker result-kicker">LANGKAH 3 DARI 3 · HASIL ANALISIS</div>
 
       <div class="card">
         <div class="card-head" style="margin-bottom:14px">
@@ -246,6 +254,8 @@ Terbatas · Cukup · Standar · Stabil · Sangat Baik</pre>
         </div>
       </div>
 
+      <div class="metrics-grid" id="metricsGrid"></div>
+
       <div class="card">
         <div class="card-head">
           <div>
@@ -257,12 +267,12 @@ Terbatas · Cukup · Standar · Stabil · Sangat Baik</pre>
         <div class="rank-list" id="rankList"></div>
       </div>
 
-      <div style="text-align:center;padding:8px 0 4px;font-size:12px;color:var(--text-3);line-height:1.7">
-        <strong style="color:var(--text-2)">Sistem Pendukung Keputusan - Metode SMART</strong><br>
-        Muhammad Fadhel Akbar · Fikri Fadli · Aulia Putri<br>
-        Universitas Pamulang &copy; 2026
-      </div>
     </div>
+
+    <footer class="site-footer">
+      <strong>Sistem Pendukung Keputusan · Metode SMART</strong>
+      <span>Fikri Fadli · Universitas Pamulang &copy; 2026</span>
+    </footer>
 
   </div><!-- /content -->
 </div><!-- /main -->

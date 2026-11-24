@@ -1,0 +1,9 @@
+# Local Netlify folder
+.netlify
+/pptx/
+/doc/*.pdf
+/doc/*.doc
+/doc/*.docx
+/doc/*.ppt
+/doc/*.pptx
+/format

@@ -81,18 +81,17 @@ const PAGE_TITLES = {
   'tab-hasil':      'Hasil Evaluasi'
 };
 
-navItems.forEach(item => {
-  item.addEventListener('click', () => {
-    navItems.forEach(n => n.classList.remove('active'));
-    item.classList.add('active');
-    const target = item.dataset.tab;
-    tabPanes.forEach(p => {
-      p.classList.remove('active');
-      if (p.id === target) p.classList.add('active');
-    });
-    pageTitleEl.textContent = PAGE_TITLES[target] || '';
+function activateTab(target) {
+  navItems.forEach(n => n.classList.toggle('active', n.dataset.tab === target));
+  document.querySelectorAll('.flow-step').forEach((n, i) => {
+    n.classList.toggle('active', n.dataset.tab === target);
+    n.classList.toggle('complete', i < ['tab-kriteria','tab-alternatif','tab-hasil'].indexOf(target));
   });
-});
+  tabPanes.forEach(p => p.classList.toggle('active', p.id === target));
+  pageTitleEl.textContent = PAGE_TITLES[target] || '';
+}
+navItems.forEach(item => item.addEventListener('click', () => activateTab(item.dataset.tab)));
+document.querySelectorAll('.flow-step,[data-go]').forEach(control => control.addEventListener('click', () => activateTab(control.dataset.tab || control.dataset.go)));
 
 /* ── STALE WEIGHT INDICATOR ─────────────────── */
 let weightsStale     = false;
@@ -107,11 +106,7 @@ function setWeightsStale(val) {
 
 document.getElementById('btnHitung').addEventListener('click', () => {
   doCalculate();
-  navItems.forEach(n => n.classList.remove('active'));
-  document.querySelector('[data-tab="tab-hasil"]').classList.add('active');
-  tabPanes.forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-hasil').classList.add('active');
-  pageTitleEl.textContent = 'Hasil Evaluasi';
+  activateTab('tab-hasil');
 });
 
 /* ── DARK MODE ──────────────────────────────── */

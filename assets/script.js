@@ -195,13 +195,13 @@ function renderTable() {
   data.forEach((row, i) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><input class="tbl-input" value="${row.nama}" data-i="${i}" data-k="nama"></td>
-      <td><input type="number" class="tbl-input" value="${row.harga}"     data-i="${i}" data-k="harga"     min="0"></td>
-      <td><input type="number" class="tbl-input" value="${row.kecepatan}" data-i="${i}" data-k="kecepatan" min="0"></td>
-      <td><input type="number" class="tbl-input" value="${row.kuota}"     data-i="${i}" data-k="kuota"     min="0"></td>
-      <td>${qualSelect(row.stabilitas, i, 'stabilitas')}</td>
-      <td>${qualSelect(row.jangkauan,  i, 'jangkauan')}</td>
-      <td>${qualSelect(row.layanan,    i, 'layanan')}</td>
+      <td data-label="Alternatif"><input class="tbl-input" value="${row.nama}" data-i="${i}" data-k="nama" aria-label="Nama alternatif"></td>
+      <td data-label="Harga"><input type="number" class="tbl-input" value="${row.harga}" data-i="${i}" data-k="harga" min="0" aria-label="Harga"></td>
+      <td data-label="Kecepatan"><input type="number" class="tbl-input" value="${row.kecepatan}" data-i="${i}" data-k="kecepatan" min="0" aria-label="Kecepatan"></td>
+      <td data-label="Kuota"><input type="number" class="tbl-input" value="${row.kuota}" data-i="${i}" data-k="kuota" min="0" aria-label="Kuota"></td>
+      <td data-label="Stabilitas">${qualSelect(row.stabilitas, i, 'stabilitas')}</td>
+      <td data-label="Jangkauan">${qualSelect(row.jangkauan, i, 'jangkauan')}</td>
+      <td data-label="Layanan">${qualSelect(row.layanan, i, 'layanan')}</td>
       <td>
         <button class="btn btn-danger-ghost btn-icon" data-i="${i}" title="Hapus baris">
           <i class="ti ti-trash" style="font-size:15px"></i>
